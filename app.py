@@ -6,13 +6,19 @@ import yaml
 import streamlit as st
 
 # configs
-with open('./config.yaml') as f:
-    args = yaml.load(f, Loader=yaml.FullLoader)
-scope = args["scope"]
-json_key_path = args["json_key_path"]
-users = args["users"]
-spreadsheet_url = args["spreadsheet_url"]
-sheetname = args["sheet_name"]
+# with open('./config.yaml') as f:
+#     args = yaml.load(f, Loader=yaml.FullLoader)
+# scope = args["scope"]
+# json_key_path = args["json_key_path"]
+# users = args["users"]
+# spreadsheet_url = args["spreadsheet_url"]
+# sheetname = args["sheet_name"]
+
+scope = st.secrets['scope']
+json_key_path = st.secrets['json_key_path']
+users = st.secrets["users"]
+spreadsheet_url = st.secrets["spreadsheet_url"]
+sheetname = st.secrets["sheet_name"]
 
 # google cloud api
 credential = ServiceAccountCredentials.from_json_keyfile_name(json_key_path, scope)
