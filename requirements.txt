@@ -2,3 +2,5 @@ oauth2client
 gspread
 pandas
 streamlit
+json
+yaml
