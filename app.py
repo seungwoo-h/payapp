@@ -13,7 +13,7 @@ json_key_path = args["json_key_path"]
 users = args["users"]
 spreadsheet_url = args["spreadsheet_url"]
 sheetname = args["sheet_name"]
-status_dct_path = args['status_dct_path']
+status_dct_path = "./status.json"
 
 # scope = st.secrets['scope']
 # json_key_path = st.secrets['json_key_path']
