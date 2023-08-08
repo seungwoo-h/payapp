@@ -6,19 +6,20 @@ import yaml
 import streamlit as st
 
 # configs
-# with open('./config.yaml') as f:
-#     args = yaml.load(f, Loader=yaml.FullLoader)
-# scope = args["scope"]
-# json_key_path = args["json_key_path"]
-# users = args["users"]
-# spreadsheet_url = args["spreadsheet_url"]
-# sheetname = args["sheet_name"]
+with open('/etc/secrets/config.yaml') as f:
+    args = yaml.load(f, Loader=yaml.FullLoader)
+scope = args["scope"]
+json_key_path = args["json_key_path"]
+users = args["users"]
+spreadsheet_url = args["spreadsheet_url"]
+sheetname = args["sheet_name"]
+status_dct_path = args['status_dct_path']
 
-scope = st.secrets['scope']
-json_key_path = st.secrets['json_key_path']
-users = st.secrets["users"]
-spreadsheet_url = st.secrets["spreadsheet_url"]
-sheetname = st.secrets["sheet_name"]
+# scope = st.secrets['scope']
+# json_key_path = st.secrets['json_key_path']
+# users = st.secrets["users"]
+# spreadsheet_url = st.secrets["spreadsheet_url"]
+# sheetname = st.secrets["sheet_name"]
 
 # google cloud api
 credential = ServiceAccountCredentials.from_json_keyfile_name(json_key_path, scope)
@@ -35,7 +36,7 @@ df = pd.DataFrame(records)
 df['정산 여부'] = False
 for user in users:
     df[f'user_{user}'] = 0
-status_dct = json.load(open("./status.json"))
+status_dct = json.load(open(status_dct_path))
 pay_done = status_dct['pay_done']
 df['정산 여부'] = df['타임스탬프'].apply(lambda x: x in pay_done)
 # 컬럼 분리
@@ -76,7 +77,7 @@ df = st.data_editor(df, disabled=[i for i in df.columns if i != "정산 여부"]
 save_status = st.button("정산 현황 저장 (정산 여부 체크후 반드시 눌러야 저장됨)")
 if save_status:
     status_dct['pay_done'] = df[df['정산 여부']==True]['타임스탬프'].to_list()
-    json.dump(status_dct, open("./status.json", 'w'))
+    json.dump(status_dct, open(status_dct_path, 'w'))
 
 st.header("💰 주고 받을 돈")
 df_groupby = df[df['정산 여부']==False].groupby(['결제한 사람', "결제 통화"]).sum().reset_index()[['결제한 사람', "결제 통화", "결제 금액 (숫자만 표기) 취소시 (-)로 표기하세요"]+[f"user_{i}" for i in users]]
